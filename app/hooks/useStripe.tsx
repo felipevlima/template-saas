@@ -13,7 +13,7 @@ export function useStripe() {
     loadStripeAsync()
   }, [])
 
-  async function createPaymentStripeCheckout(checkoutData: any) {
+  async function createPaymentStripeCheckout(checkoutData: unknown) {
     if (!stripe) return
 
     try {
@@ -27,13 +27,13 @@ export function useStripe() {
 
       const data = await response.json()
 
-      await stripe.redirectToCheckout({ sessionId: data.id })
+      await stripe.redirectToCheckout({ sessionId: data.sessionId })
     } catch(err){
       console.log(err)
     }
   }
 
-  async function createSubscriptionStripeCheckout(checkoutData: any) {
+  async function createSubscriptionStripeCheckout(checkoutData: unknown) {
     if (!stripe) return
 
     try {
@@ -47,7 +47,7 @@ export function useStripe() {
 
       const data = await response.json()
 
-      await stripe.redirectToCheckout({ sessionId: data.id })
+      await stripe.redirectToCheckout({ sessionId: data.sessionId })
     } catch(err){
       console.log(err)
     }
