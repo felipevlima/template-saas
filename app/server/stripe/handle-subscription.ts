@@ -1,4 +1,5 @@
 import { db } from "@/app/lib/firebase";
+import resend from "@/app/lib/resend";
 import "server-only"
 import Stripe from "stripe";
 
@@ -9,7 +10,9 @@ export async function handleStripeSubscription(event: Stripe.CheckoutSessionComp
 
     const userId = metadata?.userId
 
-    if (!userId) {
+    const userEmail = event.data.object.customer_email || event.data.object.customer_details?.email
+
+    if (!userId || !userEmail) {
       console.log("User ID not found in metadata")
       return
     }
@@ -18,5 +21,19 @@ export async function handleStripeSubscription(event: Stripe.CheckoutSessionComp
       stripeSubscriptionId: event.data.object.subscription,
       subscriptionStatus: "active",
     })
+
+    const { data, error } = await resend.emails.send({
+      from: 'Teste <teste@resend.dev>',
+      // to: [userEmail],
+      to: ["felip.3lima@hotmail.com"],
+      subject: 'Hello world',
+      text: 'Assinatura realizada com sucesso'
+    })
+
+    if (error) {
+      console.log(error)
+    }
+
+    console.log(data)
   }
 }
